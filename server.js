@@ -9,10 +9,17 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.post('/account', function (req, res) {
-  console.log("data", req.body);
-  //checkdatabase for email
-  //if not found, add user to user database
-  //
+  console.log("Account: ", req.body);
+  res.end();
+})
+
+app.post('/shipping', function (req, res) {
+  console.log("Shipping: ", req.body);
+  res.end();
+})
+
+app.post('/billing', function (req, res) {
+  console.log("Billing: ", req.body)
   res.end();
 })
 
