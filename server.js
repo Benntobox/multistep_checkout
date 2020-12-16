@@ -1,6 +1,6 @@
 var express = require('express');
 var bodyParser = require('body-parser');
-const { add, get, firstAdd, firstGet, clear } = require('./database/app.js')
+const { add, get, update, clear } = require('./database/app.js')
 
 var app = express();
 
@@ -11,42 +11,27 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 app.post('/account', function (req, res) {
   console.log("Account: ", req.body);
-  add({
-    name: req.body.name,
-    email: req.body.email,
-    password: req.body.password
-  })
-  .then((docs) => {
-    console.log('doc: ', docs)
-    get({email: req.body.email}).then((rec) => console.log('rec', rec))
-  })
+  add(req.body)
+  .then((docs) => console.log('Account returned: ', docs))
+  .then(() => get({email: req.body.email}))
+  .then((rec) => console.log('Found account', rec));
   res.json(req.body.email);
 })
 
 app.post('/shipping', function (req, res) {
   console.log("Shipping: ", req.body);
-  add({
-    email: req.body.email,
-    address1: req.body.address1,
-    address2: req.body.address2,
-    city: req.body.city,
-    state: req.body.state,
-    zipcode: req.body.zipcode,
-    phone: req.body.phone
-  })
-  get({email: req.body.email}).then((doc) => console.log('FIRST', doc))
+  add(req.body)
+  .then(docs => console.log('Shipping returned: ', docs))
+  .then(() => get({email: req.body.email}))
+  .then((doc) => console.log('Found shipping', doc))
   res.end();
 })
 
 app.post('/billing', function (req, res) {
   console.log("Billing: ", req.body)
-  add({
-    cc: req.body.cc,
-    expire: req.body.expire,
-    ccv: req.body.ccv,
-    billzip: req.body.billzip
-  })
-    .then(() => console.log('Secondget', get({email: req.body.email})))
+  add(req.body)
+    .then(() => get({email: req.body.email}) )
+    .then((docs) => console.log('Inner: ', docs))
   res.end();
 })
 

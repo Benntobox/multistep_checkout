@@ -5,7 +5,7 @@ class App extends React.Component {
       step: 0,
       email: ''
     }
-    //this.clear();
+    this.clear();
   }
 
   next() {
@@ -24,7 +24,7 @@ class App extends React.Component {
         password: e.target.password.value
       },
       success: function (data) {
-        console.log('data: ', data)
+        console.log('account: ', data)
         app.setState({email: data});
         app.next();
       }
@@ -47,6 +47,7 @@ class App extends React.Component {
         phone: e.target.phone.value
       },
       success: function (data) {
+        console.log('shipping: ', data)
         app.next();
       }
     })
@@ -66,6 +67,7 @@ class App extends React.Component {
         billzip: e.target.billzip.value
       },
       success: function (data) {
+        console.log('billing: ', data)
         app.next();
       }
     })
