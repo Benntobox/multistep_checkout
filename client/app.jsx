@@ -6,7 +6,7 @@ class App extends React.Component {
       email: '',
       final: {}
     }
-    this.clear();
+    //this.clear();
   }
 
   next() {
@@ -25,7 +25,6 @@ class App extends React.Component {
         password: e.target.password.value
       },
       success: function (data) {
-        console.log('account: ', data)
         app.setState({email: data});
         app.next();
       }
@@ -48,7 +47,6 @@ class App extends React.Component {
         phone: e.target.phone.value
       },
       success: function (data) {
-        console.log('shipping: ', data)
         app.next();
       }
     })
@@ -68,22 +66,8 @@ class App extends React.Component {
         billzip: e.target.billzip.value
       },
       success: function (data) {
-        console.log('Final data: ', data)
         app.setState({final: data});
         app.next();
-      }
-    })
-  }
-
-  getTotal() {
-    let app = this;
-    $.ajax({
-      url: '/complete',
-      method: 'POST',
-      data: {email: this.state.email},
-      success: function (data) {
-        console.log('FINISHED: ', JSON.stringify(data));
-        this.setState({final: data});
       }
     })
   }

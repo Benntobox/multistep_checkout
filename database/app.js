@@ -27,31 +27,13 @@ let add = async (data) => {
   return Account.collection.findOne({email: data.email})
   .then(doc => {
     if (doc) { 
-      let update = {$set: data};
-      Account.collection.findOneAndUpdate({_id: doc._id}, update);
+      Account.collection.findOneAndUpdate({_id: doc._id}, {$set: data});
       return doc;
     } else {
       const account = new Account(data);
       account.save();
       return account;
     }
-  })
-}
-
-let update = async (data) => {
-  return Account.findOne({email: data.email})
-  .then(docs => {
-    Account.update({email: data.email}, {
-      $set: {
-        address1: data.address1 || docs.address1 || null,
-        address2: data.address2 || docs.address2 || null,
-        city: data.city || docs.city || null,
-        state: data.state || docs.state || null,
-        zipcode: data.zipcode || docs.zipcode || null,
-        phone: data.phone || docs.phone || null
-      }
-    })
-    return docs;
   })
 }
 
@@ -66,21 +48,3 @@ let clear = async (filter) => {
 module.exports.add = add;
 module.exports.get = get;
 module.exports.clear = clear;
-module.exports.update = update;
-
-
-// const account = new Account({
-    //   email: data.email,
-    //   name: data.name,
-    //   password: data.password,
-    //   address1: data.address1 || doc.address1 || null,
-    //   address2: data.address2 || doc.address2 || null,
-    //   city: data.city || doc.city || null,
-    //   state: data.state || doc.state || null,
-    //   zipcode: data.zipcode || doc.zipcode || null,
-    //   phone: data.phone || doc.phone || null,
-    //   cc: data.cc || doc.cc || null,
-    //   expire: data.expire || doc.expire || null,
-    //   ccv: data.ccv || doc.ccv || null,
-    //   billzip: data.billzip || doc.billzip || null
-    // });

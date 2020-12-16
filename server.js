@@ -13,8 +13,6 @@ app.post('/account', function (req, res) {
   console.log("Account: ", req.body);
   add(req.body)
   .then((docs) => console.log('Account returned: ', docs))
-  .then(() => get({email: req.body.email}))
-  .then((rec) => console.log('Found account', rec));
   res.json(req.body.email);
 })
 
@@ -22,8 +20,6 @@ app.post('/shipping', function (req, res) {
   console.log("Shipping: ", req.body);
   add(req.body)
   .then(docs => console.log('Shipping returned: ', docs))
-  .then(() => get({email: req.body.email}))
-  .then((doc) => console.log('Found shipping', doc))
   res.end();
 })
 
@@ -32,20 +28,19 @@ app.post('/billing', function (req, res) {
   add(req.body)
   .then(() => get({email: req.body.email}))
   .then((docs) => { 
-    console.log('Inner: ', docs);
+    console.log('Final post: ', docs);
     res.json(docs);
   })
-})
-
-app.post('/complete', function (req, res) {
-  console.log('Retrieving info for ', req.body.email)
-  get({email: req.body.email})
-  .then((doc) => { console.log('d', doc); res.json(doc); })
 })
 
 app.get('/clear', function (req, res) {
   clear({});
   res.end();
+})
+
+app.get('/showall', function (req, res) {
+  get()
+  .then(docs => res.json(docs))
 })
 
 // Get rid of favicon 404 error
