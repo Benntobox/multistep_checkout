@@ -11,7 +11,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 app.post('/account', function (req, res) {
   console.log("Account: ", req.body);
-  add({name: req.body.name, email: req.body.email, password: req.body.email}).then((data) => console.log('d ', data))
+  add({name: req.body.name, email: req.body.email, password: req.body.password}).then((data) => console.log('d ', data))
   get({email: req.body.email}).then((doc) => console.log('result: ', doc));
   res.end();
 })
