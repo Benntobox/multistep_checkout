@@ -11,18 +11,22 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 app.post('/account', function (req, res) {
   console.log("Account: ", req.body);
-  firstAdd({
+  add({
     name: req.body.name,
     email: req.body.email,
     password: req.body.password
   })
-  get({email: req.body.email}).then((rec) => console.log('rec', rec))
+  .then((docs) => {
+    console.log('doc: ', docs)
+    get({email: req.body.email}).then((rec) => console.log('rec', rec))
+  })
   res.json(req.body.email);
 })
 
 app.post('/shipping', function (req, res) {
   console.log("Shipping: ", req.body);
   add({
+    email: req.body.email,
     address1: req.body.address1,
     address2: req.body.address2,
     city: req.body.city,
@@ -30,7 +34,8 @@ app.post('/shipping', function (req, res) {
     zipcode: req.body.zipcode,
     phone: req.body.phone
   })
-  get({email: req.body.email}).then((doc) => { console.log('FIRST', doc); res.end() })
+  get({email: req.body.email}).then((doc) => console.log('FIRST', doc))
+  res.end();
 })
 
 app.post('/billing', function (req, res) {

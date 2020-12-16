@@ -5,7 +5,7 @@ class App extends React.Component {
       step: 0,
       email: ''
     }
-    this.clear();
+    //this.clear();
   }
 
   next() {

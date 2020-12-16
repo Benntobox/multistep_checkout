@@ -6,7 +6,7 @@ mongoose.connect('mongodb://localhost:27017', {
 mongoose.Promise = require('bluebird');
 
 let accountSchema = mongoose.Schema({
-  email: String, 
+  email: {type: String, unique: true, required: true},
   name: String,
   password: String,
   address1: String,
@@ -34,26 +34,28 @@ let firstAdd = (data) => {
 }
 
 let add = async (data) => {
-  Account.find({email: data.email})
-    .then((docs) => {
-      const account = new Account({
-        email: data.email,
-        name: data.name,
-        password: data.password,
-        address1: data.address1 || docs.address1 || null,
-        address2: data.address2 || docs.address2 || null,
-        city: data.city || docs.city || null,
-        state: data.state || docs.state || null,
-        zipcode: data.zipcode || docs.zipcode || null,
-        phone: data.phone || docs.phone || null,
-        cc: data.cc || docs.cc || null,
-        expire: data.expire || docs.expire || null,
-        ccv: data.ccv || docs.ccv || null,
-        billzip: data.billzip || docs.billzip || null
-      });
-      Account.update({email: data.email}, account, { upsert: true });
-      return account;
+  return await Account.find({email: data.email}, (err, docs) => {
+    if (err) { return err; }
+    let doc = docs.length > 0 ? docs[0] : docs;
+    const account = new Account({
+      email: data.email,
+      name: data.name,
+      password: data.password,
+      address1: data.address1 || doc.address1 || null,
+      address2: data.address2 || doc.address2 || null,
+      city: data.city || doc.city || null,
+      state: data.state || doc.state || null,
+      zipcode: data.zipcode || doc.zipcode || null,
+      phone: data.phone || doc.phone || null,
+      cc: data.cc || doc.cc || null,
+      expire: data.expire || doc.expire || null,
+      ccv: data.ccv || doc.ccv || null,
+      billzip: data.billzip || doc.billzip || null
     });
+    if (docs.length === 0) { account.save() } 
+    else { Account.updateOne({_id: doc._id}, account) }
+    return docs;
+  })
 }
 
 let get = async (filter) => {
