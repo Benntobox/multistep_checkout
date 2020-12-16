@@ -10,7 +10,7 @@ class App extends React.Component {
   }
 
   next() {
-    this.setState({ step: this.state.step > 3 ? 0 : this.state.step + 1 });
+    this.setState({ step: this.state.step === 4 ? 0 : this.state.step + 1 });
   }
 
   accountSubmit(e) {
@@ -81,12 +81,20 @@ class App extends React.Component {
   }
 
   render() {
-    if (this.state.step === 0) { return (<F1 submit={this.accountSubmit.bind(this)}/>)}
-    if (this.state.step === 1) { return (<F2 submit={this.shippingSubmit.bind(this)}/>)}
-    if (this.state.step === 2) { return (<F3 submit={this.billingSubmit.bind(this)}/>)}
-    if (this.state.step === 3) { return (<Summary data={this.state.final}/>)}
+    if (this.state.step === 0) { return (<Home start={this.next.bind(this)}/>)}
+    if (this.state.step === 1) { return (<F1 submit={this.accountSubmit.bind(this)}/>)}
+    if (this.state.step === 2) { return (<F2 submit={this.shippingSubmit.bind(this)}/>)}
+    if (this.state.step === 3) { return (<F3 submit={this.billingSubmit.bind(this)}/>)}
+    if (this.state.step === 4) { return (<Summary next={this.next.bind(this)} data={this.state.final}/>)}
   }
 }
+
+const Home = (props) => (
+  <div>
+  <div>Welcome to the home page! Hit the button below to get started!</div>
+  <button onClick={props.start}>Get started!</button>
+  </div>
+)
 
 const F1 = (props) => (
   <div>
@@ -142,7 +150,10 @@ const F3 = (props) => (
 )
 
 const Summary = (props) => (
+  <div>
   <div>Successfull submitted all data! Also, {JSON.stringify(props.data)}</div>
+  <button onClick={props.next}>Home Page</button>
+  </div>
 )
 
 ReactDOM.render(<App />, document.getElementById('app'));
