@@ -30,14 +30,17 @@ app.post('/shipping', function (req, res) {
 app.post('/billing', function (req, res) {
   console.log("Billing: ", req.body)
   add(req.body)
-    .then(() => get({email: req.body.email}) )
-    .then((docs) => console.log('Inner: ', docs))
-  res.end();
+  .then(() => get({email: req.body.email}))
+  .then((docs) => { 
+    console.log('Inner: ', docs);
+    res.json(docs);
+  })
 })
 
 app.post('/complete', function (req, res) {
   console.log('Retrieving info for ', req.body.email)
-  get({email: req.body.email}).then((doc) => { console.log('d', doc); res.json(doc); })
+  get({email: req.body.email})
+  .then((doc) => { console.log('d', doc); res.json(doc); })
 })
 
 app.get('/clear', function (req, res) {

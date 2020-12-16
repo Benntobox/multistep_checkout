@@ -3,7 +3,8 @@ class App extends React.Component {
     super(props);
     this.state = {
       step: 0,
-      email: ''
+      email: '',
+      final: {}
     }
     this.clear();
   }
@@ -67,19 +68,22 @@ class App extends React.Component {
         billzip: e.target.billzip.value
       },
       success: function (data) {
-        console.log('billing: ', data)
+        console.log('Final data: ', data)
+        app.setState({final: data});
         app.next();
       }
     })
   }
 
   getTotal() {
+    let app = this;
     $.ajax({
       url: '/complete',
       method: 'POST',
       data: {email: this.state.email},
       success: function (data) {
-        console.log('FINISHED: ', data)
+        console.log('FINISHED: ', JSON.stringify(data));
+        this.setState({final: data});
       }
     })
   }
@@ -96,7 +100,7 @@ class App extends React.Component {
     if (this.state.step === 0) { return (<F1 submit={this.accountSubmit.bind(this)}/>)}
     if (this.state.step === 1) { return (<F2 submit={this.shippingSubmit.bind(this)}/>)}
     if (this.state.step === 2) { return (<F3 submit={this.billingSubmit.bind(this)}/>)}
-    if (this.state.step === 3) { return (<Summary get={this.getTotal.bind(this)} data={this.state.email}/>)}
+    if (this.state.step === 3) { return (<Summary data={this.state.final}/>)}
   }
 }
 
@@ -154,7 +158,7 @@ const F3 = (props) => (
 )
 
 const Summary = (props) => (
-  <div>Successfull submitted all data! Also, {props.get()}</div>
+  <div>Successfull submitted all data! Also, {JSON.stringify(props.data)}</div>
 )
 
 ReactDOM.render(<App />, document.getElementById('app'));
