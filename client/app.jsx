@@ -2,12 +2,14 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      step: 0
+      step: 0,
+      email: ''
     }
+    this.clear();
   }
 
   next() {
-    this.setState({step: this.state.step > 3 ? 0 : this.state.step + 1});
+    this.setState({ step: this.state.step > 3 ? 0 : this.state.step + 1 });
   }
 
   accountSubmit(e) {
@@ -22,6 +24,8 @@ class App extends React.Component {
         password: e.target.password.value
       },
       success: function (data) {
+        console.log('data: ', data)
+        app.setState({email: data});
         app.next();
       }
     })
@@ -34,6 +38,7 @@ class App extends React.Component {
       url: '/shipping',
       method: 'POST',
       data: {
+        email: this.state.email,
         address1: e.target.address1.value,
         address2: e.target.address2.value,
         city: e.target.city.value,
@@ -54,6 +59,7 @@ class App extends React.Component {
       url: '/billing',
       method: 'POST',
       data: {
+        email: this.state.email,
         cc: e.target.cc.value,
         expire: e.target.expire.value,
         cvv: e.target.cvv.value,
@@ -65,11 +71,30 @@ class App extends React.Component {
     })
   }
 
+  getTotal() {
+    $.ajax({
+      url: '/complete',
+      method: 'POST',
+      data: {email: this.state.email},
+      success: function (data) {
+        console.log('FINISHED: ', data)
+      }
+    })
+  }
+
+  clear() {
+    $.ajax({
+      url: '/clear',
+      method: 'GET',
+      success: () => console.log('Cleared')
+    })
+  }
+
   render() {
     if (this.state.step === 0) { return (<F1 submit={this.accountSubmit.bind(this)}/>)}
     if (this.state.step === 1) { return (<F2 submit={this.shippingSubmit.bind(this)}/>)}
     if (this.state.step === 2) { return (<F3 submit={this.billingSubmit.bind(this)}/>)}
-    if (this.state.step === 3) { return (<Summary />)}
+    if (this.state.step === 3) { return (<Summary get={this.getTotal.bind(this)} data={this.state.email}/>)}
   }
 }
 
@@ -127,7 +152,7 @@ const F3 = (props) => (
 )
 
 const Summary = (props) => (
-  <div>Successfull submitted all data!</div>
+  <div>Successfull submitted all data! Also, {props.get()}</div>
 )
 
 ReactDOM.render(<App />, document.getElementById('app'));

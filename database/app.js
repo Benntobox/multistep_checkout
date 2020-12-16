@@ -3,6 +3,8 @@ mongoose.connect('mongodb://localhost:27017', {
   useMongoClient: true
 });
 
+mongoose.Promise = require('bluebird');
+
 let accountSchema = mongoose.Schema({
   email: String, 
   name: String,
@@ -20,6 +22,16 @@ let accountSchema = mongoose.Schema({
 });
 
 let Account = mongoose.model('Account', accountSchema)
+
+let firstAdd = (data) => {
+  const acc = new Account({
+    name: data.name, 
+    email: data.email,
+    password: data.password
+  })
+  acc.save();
+  return acc;
+}
 
 let add = async (data) => {
   Account.find({email: data.email})
@@ -39,17 +51,20 @@ let add = async (data) => {
         ccv: data.ccv || docs.ccv || null,
         billzip: data.billzip || docs.billzip || null
       });
-      Account.update({email: data.email}, account, (err, docs) => {
-        if (err) { return err; }
-        return docs;
-      });
+      Account.update({email: data.email}, account, { upsert: true });
+      return account;
     });
-  return data;
 }
 
 let get = async (filter) => {
-  return Account.find(filter);
+  return await Account.find(filter);
+}
+
+let clear = async (filter) => {
+  return Account.deleteMany(filter);
 }
 
 module.exports.add = add;
 module.exports.get = get;
+module.exports.firstAdd = firstAdd;
+module.exports.clear = clear;
