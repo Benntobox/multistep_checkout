@@ -6,7 +6,6 @@ class App extends React.Component {
       email: '',
       final: {}
     }
-    //this.clear();
   }
 
   next() {
@@ -151,7 +150,11 @@ const F3 = (props) => (
 
 const Summary = (props) => (
   <div>
-  <div>Successfull submitted all data! Also, {JSON.stringify(props.data)}</div>
+  <div>Successfully submitted all data!</div>
+  <div>{Object.entries(props.data).map(entry => {
+    if (entry[0] !== '_id' && entry[0] !== '__v') { return (<div key={entry[0]}>{entry[0]}, {entry[1]}</div>) }
+    return (null)
+  })}</div>
   <button onClick={props.next}>Home Page</button>
   </div>
 )
